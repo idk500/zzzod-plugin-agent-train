@@ -12,8 +12,7 @@
   },
   "homepage": "https://github.com/idk500/zzzod-plugin-inventory-scan",
   "risk": [
-    "automation",
-    "resource_consumption"
+    "automation"
   ],
   "compatibility": {
     "minAppVersion": "0.0.0",
