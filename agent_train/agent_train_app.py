@@ -1,3 +1,4 @@
+import inspect
 from __future__ import annotations
 
 import json
@@ -46,7 +47,9 @@ class AgentTrainApp(ZApplication):
             app_id=agent_train_const.APP_ID,
             op_name=agent_train_const.APP_NAME,
             node_max_retry_times=10,
-            use_factory_run_record=False,
+            **({'use_factory_run_record': False}
+                if 'use_factory_run_record' in inspect.signature(ZApplication.__init__).parameters
+                else {}),
         )
         self.config: AgentTrainConfig = self.ctx.run_context.get_config(
             app_id=agent_train_const.APP_ID,
