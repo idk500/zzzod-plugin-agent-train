@@ -1,0 +1,24 @@
+{
+ "finished_at": "2026-10-31 11:37:18",
+ "reason": "probe完成 不消耗任何资源",
+ "probe_mode": true,
+ "whitelist": [
+  "妮可"
+ ],
+ "effective_targets": {
+  "target_level": 60,
+  "skill_target_level": 11,
+  "core_skill_target": 6,
+  "allow_crown": false,
+  "consume_shared_first": true,
+  "denny_reserve": 1000000,
+  "need_interknot_50": true
+ },
+ "probe_result": {
+  "whitelist_on_list": {
+   "妮可": false
+  },
+  "ocr_text_count": 14,
+  "note": "练度明细需角色详情页UI映射, 见同目录截图"
+ }
+}

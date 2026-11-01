@@ -19,3 +19,15 @@
 | ![上下文帧](01_agent_context.jpg) | 执行时段游戏画面（框架截图链路实证） |
 
 安全机制实测：白名单为空 → 直接拒绝运行（永不自动选人）；白名单非空时只读扫描出报告（probe），真实培养需用户显式关闭 probe。
+
+## 补充证据（2026-11-01 整理入库）
+
+probe 模式原始产物补入版本库（此前仅在 `.debug/` 本地）：
+
+| 证据 | 说明 |
+|---|---|
+| ![代理人列表](probe/agent_list_105101.jpg) | 代理人列表页（probe 只读扫描时段实拍帧） |
+| ![代理人列表2](probe/agent_list_233955.jpg) | 代理人列表页（白名单 OCR 扫描时段实拍帧） |
+| [probe/report.json](probe/report.json) | probe 报告原文：whitelist_on_list / ocr_text_count / probe_mode=true |
+
+probe 结论重申：白名单 `['妮可']` 在列表页 OCR 未命中（妮可不在当页/排序差异）→ 应用按设计**不自动选人**，报告落盘、不消耗任何资源。真实培养需用户显式关闭 probe 并配置真实白名单。
