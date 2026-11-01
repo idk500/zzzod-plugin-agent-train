@@ -1,4 +1,3 @@
-import inspect
 from __future__ import annotations
 
 import json
@@ -18,6 +17,7 @@ from zzz_od.operation.back_to_normal_world import BackToNormalWorld
 
 from . import agent_train_const
 from .agent_train_config import AgentTrainConfig
+from .zzz_compat import factory_record_kwargs
 
 
 class AgentTrainApp(ZApplication):
@@ -47,9 +47,7 @@ class AgentTrainApp(ZApplication):
             app_id=agent_train_const.APP_ID,
             op_name=agent_train_const.APP_NAME,
             node_max_retry_times=10,
-            **({'use_factory_run_record': False}
-                if 'use_factory_run_record' in inspect.signature(ZApplication.__init__).parameters
-                else {}),
+            **factory_record_kwargs(),
         )
         self.config: AgentTrainConfig = self.ctx.run_context.get_config(
             app_id=agent_train_const.APP_ID,
