@@ -39,6 +39,29 @@ for x in range(x0, x1):
         od[x, y] = (r, g, b, ay)
 im = Image.alpha_composite(im, overlay)
 
+# ---- 1.5) 右侧重造：镜像平铺左侧干净背景条带，盖掉原机器人/圆环 ----
+TILE_X0, TILE_X1 = 240, 330  # 文字区右侧的干净背景条带
+tile = im.crop((TILE_X0, 0, TILE_X1, H))
+x = 330
+flip = False
+while x < W:
+    t = tile.transpose(Image.FLIP_LEFT_RIGHT) if flip else tile
+    im.paste(t, (x, 0))
+    x += TILE_X1 - TILE_X0
+    flip = not flip
+# 接缝阴影：让左右两块读作有意的面板分割
+sh = Image.new("L", (W, H), 0)
+sd = sh.load()
+for dx in range(-14, 15):
+    xx = 330 + dx
+    if 0 <= xx < W:
+        a = int(110 * (1 - abs(dx) / 15))
+        for y in range(H):
+            sd[xx, y] = a
+im = Image.alpha_composite(im, Image.merge("RGBA", (
+    Image.new("L", (W, H), 4), Image.new("L", (W, H), 8),
+    Image.new("L", (W, H), 10), sh)))
+
 draw = ImageDraw.Draw(im)
 
 # ---- 2) 新标题文字 ----
@@ -74,20 +97,22 @@ def badge(x, y, text):
 bx = badge(42, 212, "白名单制")
 badge(bx + 14, 212, "皇冠保护")
 
-# ---- 4) 徽章：游戏内「养成指南」logo，右侧圆环右下角 ----
+# ---- 4) 主视觉：游戏内「养成指南」logo，右侧居中大幅 ----
 LOGO_SRC = r"~\.workbuddy\clipboard-images\clipboard-2026-11-05T01-25-09-959Z-3bd4c4ee.jpg"
-cx, cy, S = 512, 292, 84  # 徽章中心与边长
+cx, cy, S = 468, 188, 210  # logo 中心与边长
 logo = Image.open(LOGO_SRC).convert("RGB")
 # 以白框中心 (92,103) 为中心取方形裁剪（含黑色圆角方底）
 half = 82
 logo = logo.crop((92 - half, 103 - half, 92 + half, 103 + half)).resize((S, S), Image.LANCZOS)
 # 圆角遮罩
 mask = Image.new("L", (S, S), 0)
-ImageDraw.Draw(mask).rounded_rectangle([0, 0, S - 1, S - 1], radius=14, fill=255)
+ImageDraw.Draw(mask).rounded_rectangle([0, 0, S - 1, S - 1], radius=34, fill=255)
 im.paste(logo, (cx - S // 2, cy - S // 2), mask)
+# 青色描边 + 外圈光晕
 draw.rounded_rectangle([cx - S // 2, cy - S // 2, cx + S // 2 - 1, cy + S // 2 - 1],
-                       radius=14, outline=CYAN, width=3)
-draw.ellipse([cx - 48, cy - 48, cx + 48, cy + 48], outline=(63, 224, 208, 90), width=1)
+                       radius=34, outline=CYAN, width=4)
+draw.ellipse([cx - 128, cy - 128, cx + 128, cy + 128], outline=(63, 224, 208, 90), width=2)
+draw.ellipse([cx - 145, cy - 145, cx + 145, cy + 145], outline=(63, 224, 208, 50), width=1)
 
 os.makedirs(os.path.dirname(DST), exist_ok=True)
 im.convert("RGB").save(DST)
