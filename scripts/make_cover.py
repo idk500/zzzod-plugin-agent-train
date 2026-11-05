@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
 """基于仓库扫描器封面生成代理人自动培养封面（管线同 disc_cleanup）"""
 from PIL import Image, ImageDraw, ImageFont
+from pathlib import Path
 import os
 
-SRC = r"/workspace\plugins-src\zzzod-plugin-inventory-scan\inventory_scan\assets\ui\cover.png"
-DST = r"/workspace\plugins-src\zzzod-plugin-agent-train\agent_train\assets\ui\cover.png"
+REPO = Path(__file__).resolve().parents[1]
+
+# 底图与 logo 均为本地素材，不入库；按需用环境变量指定
+SRC = Path(os.environ.get("COVER_SRC", REPO / "assets" / "src" / "cover_base.png"))
+DST = Path(os.environ.get("COVER_DST", REPO / "agent_train" / "assets" / "ui" / "cover.png"))
+if not SRC.is_file():
+    raise SystemExit(
+        "缺少底图：请用环境变量 COVER_SRC 指定一张 600x376 的底图"
+        f"（当前期望 {SRC}）"
+    )
 
 CYAN = (63, 224, 208)
 GRAY = (168, 185, 190)
@@ -98,7 +107,9 @@ bx = badge(42, 212, "白名单制")
 badge(bx + 14, 212, "皇冠保护")
 
 # ---- 4) 主视觉：游戏内「养成指南」logo，右侧居中大幅 ----
-LOGO_SRC = r"~\.workbuddy\clipboard-images\clipboard-2026-11-05T01-25-09-959Z-3bd4c4ee.jpg"
+LOGO_SRC = Path(os.environ.get("LOGO_SRC", REPO / "assets" / "src" / "logo_src.jpg"))
+if not LOGO_SRC.is_file():
+    raise SystemExit("缺少 logo 素材：请用环境变量 LOGO_SRC 指定一张带方底的原图")
 cx, cy, S = 468, 188, 210  # logo 中心与边长
 logo = Image.open(LOGO_SRC).convert("RGB")
 # 以白框中心 (92,103) 为中心取方形裁剪（含黑色圆角方底）
