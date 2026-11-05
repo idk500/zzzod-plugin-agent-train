@@ -74,21 +74,20 @@ def badge(x, y, text):
 bx = badge(42, 212, "白名单制")
 badge(bx + 14, 212, "皇冠保护")
 
-# ---- 4) 皇冠徽章：右侧圆环右下角 ----
-cx, cy, R = 512, 292, 40
-draw.ellipse([cx - R, cy - R, cx + R, cy + R], fill=(10, 22, 24, 255), outline=CYAN, width=3)
-draw.ellipse([cx - R - 6, cy - R - 6, cx + R + 6, cy + R + 6], outline=(63, 224, 208, 90), width=1)
-
-tc = CYAN
-# 三尖冠体
-crown = [(cx - 18, cy + 8), (cx + 18, cy + 8), (cx + 18, cy - 6),
-         (cx + 11, cy - 16), (cx, cy - 4), (cx - 11, cy - 16), (cx - 18, cy - 6)]
-draw.polygon(crown, fill=tc)
-# 三个尖顶圆珠
-for tx, ty in [(cx - 13, cy - 19), (cx, cy - 8), (cx + 13, cy - 19)]:
-    draw.ellipse([tx - 4, ty - 4, tx + 4, ty + 4], fill=tc)
-# 底座横条
-draw.rounded_rectangle([cx - 18, cy + 12, cx + 18, cy + 20], radius=3, fill=tc)
+# ---- 4) 徽章：游戏内「养成指南」logo，右侧圆环右下角 ----
+LOGO_SRC = r"~\.workbuddy\clipboard-images\clipboard-2026-11-05T01-25-09-959Z-3bd4c4ee.jpg"
+cx, cy, S = 512, 292, 84  # 徽章中心与边长
+logo = Image.open(LOGO_SRC).convert("RGB")
+# 以白框中心 (92,103) 为中心取方形裁剪（含黑色圆角方底）
+half = 82
+logo = logo.crop((92 - half, 103 - half, 92 + half, 103 + half)).resize((S, S), Image.LANCZOS)
+# 圆角遮罩
+mask = Image.new("L", (S, S), 0)
+ImageDraw.Draw(mask).rounded_rectangle([0, 0, S - 1, S - 1], radius=14, fill=255)
+im.paste(logo, (cx - S // 2, cy - S // 2), mask)
+draw.rounded_rectangle([cx - S // 2, cy - S // 2, cx + S // 2 - 1, cy + S // 2 - 1],
+                       radius=14, outline=CYAN, width=3)
+draw.ellipse([cx - 48, cy - 48, cx + 48, cy + 48], outline=(63, 224, 208, 90), width=1)
 
 os.makedirs(os.path.dirname(DST), exist_ok=True)
 im.convert("RGB").save(DST)

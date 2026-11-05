@@ -12,7 +12,7 @@
 
 ## 版本
 
-- 版本：0.1.4（versionCode 5）
+- 版本：0.1.5（versionCode 6）
 - 作者：[idk500](https://github.com/idk500)
 - 仓库：https://github.com/idk500/zzzod-plugin-agent-train
 
